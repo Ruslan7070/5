@@ -11,7 +11,6 @@ class FSMAdmin(StatesGroup):
     gender = State()
     group = State()
     submit = State()
-
 async def fsm_start(message: types.Message,state: FSMContext):
     if message.chat.type == 'private':
         await FSMAdmin.name.set()
