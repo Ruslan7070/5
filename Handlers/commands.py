@@ -1,7 +1,9 @@
 from aiogram import types, Dispatcher
+from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup,InlineKeyboardButton
 from config import bot, dp
 from asyncio import sleep
+from database.bot_db import sql_command_random
 
 
 
@@ -55,8 +57,17 @@ async def dice(message: types.Message):
     else:
         await message.answer('Ничья!!!')
 
+async def get_random_user(message: types.Message) -> None:
+    random_user = await sql_command_random()
+    # await message.answer(random_user[0])
+    # f"id - {random_user[0]}, \nИмя - {random_user[1]}, \nНаправление - {random_user[2]}, \n"
+    # f"Возраст - {random_user[3]}, \nГруппа - {random_user[4]}")
+    print (random_user)
+
+
 def register_handlers_commands(dp: Dispatcher):
     dp.register_message_handler(start_command, commands=['start'])
     dp.register_message_handler(quiz_1, commands=['quiz'])
     dp.register_message_handler(send_mem, commands=['mem'])
     dp.register_message_handler(dice, commands=['dice'])
+    dp.register_message_handler(get_random_user, Text(equals = "get", ignore_case = True))

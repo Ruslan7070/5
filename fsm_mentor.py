@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text, state
 from aiogram.dispatcher.filters.state import State,StatesGroup
 from config import ADMINs
+from database.bot_db import sql_command_insert
 
 class FSMAdmin(StatesGroup):
     name = State()
@@ -53,7 +54,7 @@ async def load_gender(message: types.Message,state: FSMContext):
     await FSMAdmin.next()
     await message.answer("В какой группе ты учишься?")
 
-async def load_group(message: types.Message,state: FSMContext):
+async def load_groups(message: types.Message,state: FSMContext):
     async with state.proxy() as data:
         data['group'] = message.text
     await message.answer(f"{data['name']} {data['direction']} {data['age']} {data['gender']} {data['group']}")
@@ -62,6 +63,7 @@ async def load_group(message: types.Message,state: FSMContext):
 
 async def submit(message: types.Message, state: FSMContext):
     if message.text.lower() == 'да':
+        await sql_command_insert(state)
         await state.finish()
         await message.answer("Я сохранил ваши данные!")
     elif message.text.lower() == "записать снова":
@@ -72,5 +74,5 @@ def register_handlers_fsm_anketa(dp:Dispatcher):
     dp.register_message_handler(load_direction, state=FSMAdmin.direction)
     dp.register_message_handler(load_age, state=FSMAdmin.age)
     dp.register_message_handler(load_gender, state=FSMAdmin.gender)
-    dp.register_message_handler(load_group, state=FSMAdmin.group)
+    dp.register_message_handler(load_groups, state=FSMAdmin.group)
     dp.register_message_handler(submit, state=FSMAdmin.submit)
