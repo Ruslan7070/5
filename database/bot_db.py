@@ -1,5 +1,6 @@
 import random
 import sqlite3
+from aiogram import Bot
 
 
 def sql_create():
@@ -36,7 +37,7 @@ async def sql_command_insert(state):
 async def sql_command_random(message):
     result = cursor.execute("SELECT * FROM mentors ").fetchall()
     random_user = random.choice(result)
-    await bot.send_message(message.from_user.id,
+    await Bot.send_message(message.from_user.id,
                            f"id - {random_user[0]}, \nИмя - {random_user[1]}, \nНаправление - {random_user[2]}, \n"
                            f"Возраст - {random_user[3]}, \nГруппа - {random_user[4]}")
 # async def sql_command_random():

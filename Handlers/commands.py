@@ -10,6 +10,12 @@ from database.bot_db import sql_command_random
 async def start_command(message: types.Message) -> None:
     await bot.send_message(message.chat.id, f"Hello User {message.from_user.full_name}")
 
+async def video_command(message: types.Message) -> None:
+    await bot.send_video(message.chat.id, video=open('video/video.MP4', 'rb'))
+
+async def send_mem(message: types.Message):
+    await bot.send_photo(message.chat.id, photo=open('img/img.jpg', 'rb'))
+
 
 async def quiz_1(message: types.Message) -> None:
     markup = InlineKeyboardMarkup()
@@ -35,10 +41,6 @@ async def quiz_1(message: types.Message) -> None:
     )
 
 
-
-async def send_mem(message: types.Message):
-    await bot.send_photo(message.chat.id, photo=open('img/img.jpg', 'rb'))
-
 async def dice(message: types.Message):
     await message.answer(f'{message.from_user.first_name} VS Bot')
     await sleep(2)
@@ -58,7 +60,7 @@ async def dice(message: types.Message):
         await message.answer('Ничья!!!')
 
 async def get_random_user(message: types.Message) -> None:
-    random_user = await sql_command_random()
+    random_user = await sql_command_random(message)
     # await message.answer(random_user[0])
     # f"id - {random_user[0]}, \nИмя - {random_user[1]}, \nНаправление - {random_user[2]}, \n"
     # f"Возраст - {random_user[3]}, \nГруппа - {random_user[4]}")
@@ -71,3 +73,4 @@ def register_handlers_commands(dp: Dispatcher):
     dp.register_message_handler(send_mem, commands=['mem'])
     dp.register_message_handler(dice, commands=['dice'])
     dp.register_message_handler(get_random_user, Text(equals = "get", ignore_case = True))
+    dp.register_message_handler(video_command, commands=['video'])
